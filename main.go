@@ -30,7 +30,7 @@ type Invoice struct {
 	Due  string `json:"due" yaml:"due"`
 
 	Items      []string  `json:"items" yaml:"items"`
-	Quantities []int     `json:"quantities" yaml:"quantities"`
+	Quantities []float64 `json:"quantities" yaml:"quantities"`
 	Rates      []float64 `json:"rates" yaml:"rates"`
 
 	Tax      float64 `json:"tax" yaml:"tax"`
@@ -45,7 +45,7 @@ func DefaultInvoice() Invoice {
 		Id:         time.Now().Format("20060102"),
 		Title:      "INVOICE",
 		Rates:      []float64{25},
-		Quantities: []int{2},
+		Quantities: []float64{2},
 		Items:      []string{"Paper Cranes"},
 		From:       "Project Folded, Inc.",
 		To:         "Untitled Corporation, Inc.",
@@ -72,7 +72,7 @@ func init() {
 	generateCmd.Flags().StringVar(&file.Title, "title", "INVOICE", "Title")
 
 	generateCmd.Flags().Float64SliceVarP(&file.Rates, "rate", "r", defaultInvoice.Rates, "Rates")
-	generateCmd.Flags().IntSliceVarP(&file.Quantities, "quantity", "q", defaultInvoice.Quantities, "Quantities")
+	generateCmd.Flags().Float64SliceVarP(&file.Quantities, "quantity", "q", defaultInvoice.Quantities, "Quantities")
 	generateCmd.Flags().StringSliceVarP(&file.Items, "item", "i", defaultInvoice.Items, "Items")
 
 	generateCmd.Flags().StringVarP(&file.Logo, "logo", "l", defaultInvoice.Logo, "Company logo")
@@ -132,7 +132,7 @@ var generateCmd = &cobra.Command{
 		writeHeaderRow(&pdf)
 		subtotal := 0.0
 		for i := range file.Items {
-			q := 1
+			q := 1.0
 			if len(file.Quantities) > i {
 				q = file.Quantities[i]
 			}
