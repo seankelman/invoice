@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"image"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -12,8 +13,10 @@ import (
 
 const (
 	quantityColumnOffset = 360
-	rateColumnOffset     = 405
+	rateColumnEdge       = 450
 	amountColumnOffset   = 480
+	rightMargin          = 520
+	labelColumnOffset    = 405
 )
 
 const (
@@ -72,7 +75,7 @@ func writeTitle(pdf *gopdf.GoPdf, title, id, date string) {
 func writeDueDate(pdf *gopdf.GoPdf, due string) {
 	_ = pdf.SetFont("Inter", "", 9)
 	pdf.SetTextColor(75, 75, 75)
-	pdf.SetX(rateColumnOffset)
+	pdf.SetX(labelColumnOffset)
 	_ = pdf.Cell(nil, "Due Date")
 	pdf.SetTextColor(0, 0, 0)
 	_ = pdf.SetFontSize(11)
@@ -111,7 +114,7 @@ func writeHeaderRow(pdf *gopdf.GoPdf) {
 	_ = pdf.Cell(nil, "ITEM")
 	pdf.SetX(quantityColumnOffset)
 	_ = pdf.Cell(nil, "QTY")
-	pdf.SetX(rateColumnOffset)
+	pdf.SetX(quantityColumnOffset + 60)
 	_ = pdf.Cell(nil, "RATE")
 	pdf.SetX(amountColumnOffset)
 	_ = pdf.Cell(nil, "AMOUNT")
@@ -149,20 +152,36 @@ func writeFooter(pdf *gopdf.GoPdf, id string) {
 	pdf.Br(48)
 }
 
+func getWidth(pdf *gopdf.GoPdf, stringToMeasure string) (float64) {
+	// Make sure you call SetFont before calling getWidth()
+	width, _ := pdf.MeasureTextWidth(stringToMeasure)
+	return width
+}
+
 func writeRow(pdf *gopdf.GoPdf, item string, quantity float64, rate float64) {
 	_ = pdf.SetFont("Inter", "", 11)
 	pdf.SetTextColor(0, 0, 0)
 
 	total := float64(quantity) * rate
-	amount := strconv.FormatFloat(total, 'f', 2, 64)
+	amount := currencySymbols[file.Currency]+strconv.FormatFloat(total, 'f', 2, 64)
 
 	_ = pdf.Cell(nil, item)
-	pdf.SetX(quantityColumnOffset)
+	// Align the quantities by the decimal point:
+	quantityOffset := 0.0
+	digitsLeftOfDecimalPoint := math.Floor(quantity / 10)
+	if (digitsLeftOfDecimalPoint > 0) {
+		quantityOffset = getWidth(pdf, strconv.FormatFloat(digitsLeftOfDecimalPoint, 'f', -1, 64))
+	}
+	pdf.SetX(quantityColumnOffset - quantityOffset)
 	_ = pdf.Cell(nil, strconv.FormatFloat(quantity, 'f', -1, 64))
-	pdf.SetX(rateColumnOffset)
-	_ = pdf.Cell(nil, currencySymbols[file.Currency]+strconv.FormatFloat(rate, 'f', 2, 64))
-	pdf.SetX(amountColumnOffset)
-	_ = pdf.Cell(nil, currencySymbols[file.Currency]+amount)
+
+	formattedRate := currencySymbols[file.Currency]+strconv.FormatFloat(rate, 'f', 2, 64)
+	pdf.SetX(rateColumnEdge - getWidth(pdf, formattedRate))
+	_ = pdf.Cell(nil, formattedRate)
+
+	amountWidth := getWidth(pdf, amount)
+	pdf.SetX(rightMargin - amountWidth)
+	_ = pdf.Cell(nil, amount)
 	pdf.Br(24)
 }
 
@@ -182,15 +201,16 @@ func writeTotals(pdf *gopdf.GoPdf, subtotal float64, tax float64, discount float
 func writeTotal(pdf *gopdf.GoPdf, label string, total float64) {
 	_ = pdf.SetFont("Inter", "", 9)
 	pdf.SetTextColor(75, 75, 75)
-	pdf.SetX(rateColumnOffset)
+	pdf.SetX(labelColumnOffset)
 	_ = pdf.Cell(nil, label)
 	pdf.SetTextColor(0, 0, 0)
 	_ = pdf.SetFontSize(12)
-	pdf.SetX(amountColumnOffset - 15)
 	if label == totalLabel {
 		_ = pdf.SetFont("Inter-Bold", "", 11.5)
 	}
-	_ = pdf.Cell(nil, currencySymbols[file.Currency]+strconv.FormatFloat(total, 'f', 2, 64))
+	formattedTotal := currencySymbols[file.Currency]+strconv.FormatFloat(total, 'f', 2, 64)
+	pdf.SetX(rightMargin - getWidth(pdf, formattedTotal))
+	_ = pdf.Cell(nil, formattedTotal)
 	pdf.Br(24)
 }
 
