@@ -26,6 +26,8 @@ const (
 	totalLabel    = "Total"
 )
 
+var bottomYPos = 690.0
+
 func writeLogo(pdf *gopdf.GoPdf, logo string, from string) {
 	if logo != "" {
 		width, height := getImageDimension(logo)
@@ -122,7 +124,7 @@ func writeHeaderRow(pdf *gopdf.GoPdf) {
 }
 
 func writeNotes(pdf *gopdf.GoPdf, notes string) {
-	pdf.SetY(600)
+	pdf.SetY(bottomYPos)
 
 	_ = pdf.SetFont("Inter", "", 9)
 	pdf.SetTextColor(55, 55, 55)
@@ -188,7 +190,7 @@ func writeRow(pdf *gopdf.GoPdf, item string, quantity float64, rate float64) {
 }
 
 func writeTotals(pdf *gopdf.GoPdf, subtotal float64, tax float64, discount float64) {
-	pdf.SetY(600)
+	pdf.SetY(bottomYPos)
 
 	writeTotal(pdf, subtotalLabel, subtotal)
 	if tax > 0 {
