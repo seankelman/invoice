@@ -26,6 +26,9 @@ const (
 	totalLabel    = "Total"
 )
 
+var titleYPos = 0.0
+var bottomYPos = 690.0
+
 func writeLogo(pdf *gopdf.GoPdf, logo string, from string) {
 	if logo != "" {
 		width, height := getImageDimension(logo)
@@ -50,13 +53,13 @@ func writeLogo(pdf *gopdf.GoPdf, logo string, from string) {
 			pdf.Br(15)
 		}
 	}
-	pdf.Br(21)
 	pdf.SetStrokeColor(225, 225, 225)
 	pdf.Line(pdf.GetX(), pdf.GetY(), 260, pdf.GetY())
-	pdf.Br(36)
+	pdf.Br(24)
 }
 
 func writeTitle(pdf *gopdf.GoPdf, title, id, date string) {
+	titleYPos = pdf.GetY()
 	_ = pdf.SetFont("Inter-Bold", "", 24)
 	pdf.SetTextColor(0, 0, 0)
 	_ = pdf.Cell(nil, title)
@@ -85,6 +88,10 @@ func writeDueDate(pdf *gopdf.GoPdf, due string) {
 }
 
 func writeBillTo(pdf *gopdf.GoPdf, to string) {
+	// Line this up with the Title:
+	pdf.SetY(titleYPos + 6)
+	billToXPos := 360.0
+	pdf.SetX(billToXPos)
 	pdf.SetTextColor(75, 75, 75)
 	_ = pdf.SetFont("Inter", "", 9)
 	_ = pdf.Cell(nil, "BILL TO")
@@ -95,6 +102,7 @@ func writeBillTo(pdf *gopdf.GoPdf, to string) {
 	toLines := strings.Split(formattedTo, "\n")
 
 	for i := 0; i < len(toLines); i++ {
+		pdf.SetX(billToXPos)
 		if i == 0 {
 			_ = pdf.SetFont("Inter", "", 15)
 			_ = pdf.Cell(nil, toLines[i])
@@ -118,11 +126,11 @@ func writeHeaderRow(pdf *gopdf.GoPdf) {
 	_ = pdf.Cell(nil, "RATE")
 	pdf.SetX(amountColumnOffset)
 	_ = pdf.Cell(nil, "AMOUNT")
-	pdf.Br(24)
+	pdf.Br(18)
 }
 
 func writeNotes(pdf *gopdf.GoPdf, notes string) {
-	pdf.SetY(600)
+	pdf.SetY(bottomYPos)
 
 	_ = pdf.SetFont("Inter", "", 9)
 	pdf.SetTextColor(55, 55, 55)
@@ -184,11 +192,11 @@ func writeRow(pdf *gopdf.GoPdf, item string, quantity float64, rate float64) {
 		pdf.SetX(rightMargin - amountWidth)
 		_ = pdf.Cell(nil, amount)
 	}
-	pdf.Br(24)
+	pdf.Br(18)
 }
 
 func writeTotals(pdf *gopdf.GoPdf, subtotal float64, tax float64, discount float64) {
-	pdf.SetY(600)
+	pdf.SetY(bottomYPos)
 
 	writeTotal(pdf, subtotalLabel, subtotal)
 	if tax > 0 {
