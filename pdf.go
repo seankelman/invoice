@@ -82,7 +82,7 @@ func writeDueDate(pdf *gopdf.GoPdf, due string) {
 	_ = pdf.Cell(nil, "Due Date")
 	pdf.SetTextColor(0, 0, 0)
 	_ = pdf.SetFontSize(11)
-	pdf.SetX(amountColumnOffset - 15)
+	pdf.SetX(rightMargin - getWidth(pdf, due))
 	_ = pdf.Cell(nil, due)
 	pdf.Br(12)
 }
