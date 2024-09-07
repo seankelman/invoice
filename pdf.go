@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	quantityColumnOffset = 360
-	rateColumnEdge       = 450
-	amountColumnOffset   = 480
-	rightMargin          = 520
+	quantityColumnOffset = 420
+	rateColumnEdge       = 500
+	amountColumnOffset   = 535
+	rightMargin          = 575
 	labelColumnOffset    = 405
 )
 
@@ -27,7 +27,7 @@ const (
 )
 
 var titleYPos = 0.0
-var bottomYPos = 690.0
+var bottomYPos = 660.0
 
 func writeLogo(pdf *gopdf.GoPdf, logo string, from string) {
 	if logo != "" {
@@ -90,7 +90,7 @@ func writeDueDate(pdf *gopdf.GoPdf, due string) {
 func writeBillTo(pdf *gopdf.GoPdf, to string) {
 	// Line this up with the Title:
 	pdf.SetY(titleYPos + 6)
-	billToXPos := 360.0
+	billToXPos := 420.0
 	pdf.SetX(billToXPos)
 	pdf.SetTextColor(75, 75, 75)
 	_ = pdf.SetFont("Inter", "", 9)
@@ -122,7 +122,7 @@ func writeHeaderRow(pdf *gopdf.GoPdf) {
 	_ = pdf.Cell(nil, "ITEM")
 	pdf.SetX(quantityColumnOffset)
 	_ = pdf.Cell(nil, "QTY")
-	pdf.SetX(quantityColumnOffset + 60)
+	pdf.SetX(rateColumnEdge - getWidth(pdf, "RATE"))
 	_ = pdf.Cell(nil, "RATE")
 	pdf.SetX(amountColumnOffset)
 	_ = pdf.Cell(nil, "AMOUNT")

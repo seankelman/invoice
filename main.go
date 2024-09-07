@@ -112,7 +112,7 @@ var generateCmd = &cobra.Command{
 
 		pdf := gopdf.GoPdf{}
 		pdf.Start(gopdf.Config{
-			PageSize: *gopdf.PageSizeA4,
+			PageSize: *gopdf.PageSizeLetter,
 		})
 		pdf.SetMargins(40, 40, 40, 40)
 		pdf.AddPage()
