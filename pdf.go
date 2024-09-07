@@ -52,10 +52,9 @@ func writeLogo(pdf *gopdf.GoPdf, logo string, from string) {
 			pdf.Br(15)
 		}
 	}
-	pdf.Br(21)
 	pdf.SetStrokeColor(225, 225, 225)
 	pdf.Line(pdf.GetX(), pdf.GetY(), 260, pdf.GetY())
-	pdf.Br(36)
+	pdf.Br(24)
 }
 
 func writeTitle(pdf *gopdf.GoPdf, title, id, date string) {
