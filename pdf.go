@@ -12,11 +12,17 @@ import (
 )
 
 const (
-	quantityColumnOffset = 360
-	rateColumnEdge       = 450
-	amountColumnOffset   = 480
-	rightMargin          = 520
+	quantityColumnOffset = 420
+	rateColumnEdge       = 500
+	rightMargin          = 575
 	labelColumnOffset    = 405
+)
+
+const (
+	headerItem = "ITEM"
+	headerQty = "QTY"
+	headerRate = "RATE"
+	headerAmount = "AMOUNT"
 )
 
 const (
@@ -27,7 +33,7 @@ const (
 )
 
 var titleYPos = 0.0
-var bottomYPos = 690.0
+var bottomYPos = 660.0
 
 func writeLogo(pdf *gopdf.GoPdf, logo string, from string) {
 	if logo != "" {
@@ -82,7 +88,7 @@ func writeDueDate(pdf *gopdf.GoPdf, due string) {
 	_ = pdf.Cell(nil, "Due Date")
 	pdf.SetTextColor(0, 0, 0)
 	_ = pdf.SetFontSize(11)
-	pdf.SetX(amountColumnOffset - 15)
+	pdf.SetX(rightMargin - getWidth(pdf, due))
 	_ = pdf.Cell(nil, due)
 	pdf.Br(12)
 }
@@ -90,7 +96,7 @@ func writeDueDate(pdf *gopdf.GoPdf, due string) {
 func writeBillTo(pdf *gopdf.GoPdf, to string) {
 	// Line this up with the Title:
 	pdf.SetY(titleYPos + 6)
-	billToXPos := 360.0
+	billToXPos := 420.0
 	pdf.SetX(billToXPos)
 	pdf.SetTextColor(75, 75, 75)
 	_ = pdf.SetFont("Inter", "", 9)
@@ -119,13 +125,13 @@ func writeBillTo(pdf *gopdf.GoPdf, to string) {
 func writeHeaderRow(pdf *gopdf.GoPdf) {
 	_ = pdf.SetFont("Inter", "", 9)
 	pdf.SetTextColor(55, 55, 55)
-	_ = pdf.Cell(nil, "ITEM")
+	_ = pdf.Cell(nil, headerItem)
 	pdf.SetX(quantityColumnOffset)
-	_ = pdf.Cell(nil, "QTY")
-	pdf.SetX(quantityColumnOffset + 60)
-	_ = pdf.Cell(nil, "RATE")
-	pdf.SetX(amountColumnOffset)
-	_ = pdf.Cell(nil, "AMOUNT")
+	_ = pdf.Cell(nil, headerQty)
+	pdf.SetX(rateColumnEdge - getWidth(pdf, headerRate))
+	_ = pdf.Cell(nil, headerRate)
+	pdf.SetX(rightMargin - getWidth(pdf, headerAmount))
+	_ = pdf.Cell(nil, headerAmount)
 	pdf.Br(18)
 }
 
