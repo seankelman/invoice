@@ -118,7 +118,7 @@ func writeHeaderRow(pdf *gopdf.GoPdf) {
 	_ = pdf.Cell(nil, "RATE")
 	pdf.SetX(amountColumnOffset)
 	_ = pdf.Cell(nil, "AMOUNT")
-	pdf.Br(24)
+	pdf.Br(18)
 }
 
 func writeNotes(pdf *gopdf.GoPdf, notes string) {
@@ -184,7 +184,7 @@ func writeRow(pdf *gopdf.GoPdf, item string, quantity float64, rate float64) {
 		pdf.SetX(rightMargin - amountWidth)
 		_ = pdf.Cell(nil, amount)
 	}
-	pdf.Br(24)
+	pdf.Br(18)
 }
 
 func writeTotals(pdf *gopdf.GoPdf, subtotal float64, tax float64, discount float64) {
