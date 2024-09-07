@@ -175,13 +175,15 @@ func writeRow(pdf *gopdf.GoPdf, item string, quantity float64, rate float64) {
 	pdf.SetX(quantityColumnOffset - quantityOffset)
 	_ = pdf.Cell(nil, strconv.FormatFloat(quantity, 'f', -1, 64))
 
-	formattedRate := currencySymbols[file.Currency]+strconv.FormatFloat(rate, 'f', 2, 64)
-	pdf.SetX(rateColumnEdge - getWidth(pdf, formattedRate))
-	_ = pdf.Cell(nil, formattedRate)
+	if (rate > 0.0) {
+		formattedRate := currencySymbols[file.Currency]+strconv.FormatFloat(rate, 'f', 2, 64)
+		pdf.SetX(rateColumnEdge - getWidth(pdf, formattedRate))
+		_ = pdf.Cell(nil, formattedRate)
 
-	amountWidth := getWidth(pdf, amount)
-	pdf.SetX(rightMargin - amountWidth)
-	_ = pdf.Cell(nil, amount)
+		amountWidth := getWidth(pdf, amount)
+		pdf.SetX(rightMargin - amountWidth)
+		_ = pdf.Cell(nil, amount)
+	}
 	pdf.Br(24)
 }
 
