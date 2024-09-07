@@ -26,6 +26,7 @@ const (
 	totalLabel    = "Total"
 )
 
+var titleYPos = 0.0
 var bottomYPos = 690.0
 
 func writeLogo(pdf *gopdf.GoPdf, logo string, from string) {
@@ -58,6 +59,7 @@ func writeLogo(pdf *gopdf.GoPdf, logo string, from string) {
 }
 
 func writeTitle(pdf *gopdf.GoPdf, title, id, date string) {
+	titleYPos = pdf.GetY()
 	_ = pdf.SetFont("Inter-Bold", "", 24)
 	pdf.SetTextColor(0, 0, 0)
 	_ = pdf.Cell(nil, title)
@@ -86,6 +88,10 @@ func writeDueDate(pdf *gopdf.GoPdf, due string) {
 }
 
 func writeBillTo(pdf *gopdf.GoPdf, to string) {
+	// Line this up with the Title:
+	pdf.SetY(titleYPos + 6)
+	billToXPos := 360.0
+	pdf.SetX(billToXPos)
 	pdf.SetTextColor(75, 75, 75)
 	_ = pdf.SetFont("Inter", "", 9)
 	_ = pdf.Cell(nil, "BILL TO")
@@ -96,6 +102,7 @@ func writeBillTo(pdf *gopdf.GoPdf, to string) {
 	toLines := strings.Split(formattedTo, "\n")
 
 	for i := 0; i < len(toLines); i++ {
+		pdf.SetX(billToXPos)
 		if i == 0 {
 			_ = pdf.SetFont("Inter", "", 15)
 			_ = pdf.Cell(nil, toLines[i])
