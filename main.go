@@ -131,11 +131,13 @@ var generateCmd = &cobra.Command{
 		writeBillTo(&pdf, file.To)
 		writeHeaderRow(&pdf)
 		subtotal := 0.0
+		total_quantity := 0.0
 		for i := range file.Items {
 			q := 1.0
 			if len(file.Quantities) > i {
 				q = file.Quantities[i]
 			}
+			total_quantity += q
 
 			r := 0.0
 			if len(file.Rates) > i {
@@ -145,6 +147,8 @@ var generateCmd = &cobra.Command{
 			writeRow(&pdf, file.Items[i], q, r)
 			subtotal += float64(q) * r
 		}
+		// Write the total quantity
+		writeRow(&pdf, "", total_quantity, 0.0)
 		if file.Note != "" {
 			writeNotes(&pdf, file.Note)
 		}
