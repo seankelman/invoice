@@ -14,9 +14,15 @@ import (
 const (
 	quantityColumnOffset = 420
 	rateColumnEdge       = 500
-	amountColumnOffset   = 535
 	rightMargin          = 575
 	labelColumnOffset    = 405
+)
+
+const (
+	headerItem = "ITEM"
+	headerQty = "QTY"
+	headerRate = "RATE"
+	headerAmount = "AMOUNT"
 )
 
 const (
@@ -119,13 +125,13 @@ func writeBillTo(pdf *gopdf.GoPdf, to string) {
 func writeHeaderRow(pdf *gopdf.GoPdf) {
 	_ = pdf.SetFont("Inter", "", 9)
 	pdf.SetTextColor(55, 55, 55)
-	_ = pdf.Cell(nil, "ITEM")
+	_ = pdf.Cell(nil, headerItem)
 	pdf.SetX(quantityColumnOffset)
-	_ = pdf.Cell(nil, "QTY")
-	pdf.SetX(rateColumnEdge - getWidth(pdf, "RATE"))
-	_ = pdf.Cell(nil, "RATE")
-	pdf.SetX(amountColumnOffset)
-	_ = pdf.Cell(nil, "AMOUNT")
+	_ = pdf.Cell(nil, headerQty)
+	pdf.SetX(rateColumnEdge - getWidth(pdf, headerRate))
+	_ = pdf.Cell(nil, headerRate)
+	pdf.SetX(rightMargin - getWidth(pdf, headerAmount))
+	_ = pdf.Cell(nil, headerAmount)
 	pdf.Br(18)
 }
 
